@@ -1,5 +1,5 @@
 # network.py
-from flask import Blueprint, request, jsonify, send_from_directory
+from flask import Blueprint, request, jsonify, send_from_directory, render_template
 import pandas as pd
 import os
 from werkzeug.utils import secure_filename
@@ -28,7 +28,7 @@ def save_data(df):
 
 @network_bp.route("/")
 def home():
-    return send_from_directory(network_bp.static_folder, "index.html")
+    return render_template("network.html")
 
 @network_bp.route("/post", methods=["POST"])
 def create_post():

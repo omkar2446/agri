@@ -5,7 +5,13 @@ from flask import Blueprint, render_template, request, jsonify
 from keras.models import load_model
 
 # Create Blueprint
-project_bp = Blueprint("project", __name__, template_folder="../templates")
+project_bp = Blueprint(
+    "project",
+    __name__,
+    template_folder="templates",
+    url_prefix="/project"   # 🔥 THIS LINE FIXES EVERYTHING
+)
+ 
 
 # Path to model
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "plant_disease_model.h5")
@@ -37,7 +43,7 @@ def get_greeting():
 # Routes
 @project_bp.route("/")
 def home():
-    return render_template("index.html", greeting=get_greeting())
+    return render_template("project.html", greeting=get_greeting())
 
 @project_bp.route("/predict", methods=["POST"])
 def predict():

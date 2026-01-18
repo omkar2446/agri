@@ -7,7 +7,11 @@ from predict import predict_bp
 from project import project_bp
 #from plant import plant_bp  # <-- new plant detection blueprint
 
-app = Flask(__name__, static_folder="static")
+app = Flask(
+    __name__,
+    template_folder="templates",
+    static_folder="static"
+)
 app.secret_key = "farmtech_secret"
 
 EXCEL_FILE = "users.xlsx"
@@ -28,7 +32,7 @@ if not os.path.exists(EXCEL_FILE):
 @app.route("/")
 def home():
     user = session.get("user")
-    return render_template("dashboard.html", user=user)
+    return render_template("index.html", user=user)
 
 @app.route("/signup", methods=["POST"])
 def signup():

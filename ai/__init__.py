@@ -3,7 +3,7 @@ import google.generativeai as genai
 from datetime import datetime
 
 # Create Blueprint
-ai_bp = Blueprint("ai", __name__, template_folder="index", url_prefix="/ai")
+ai_bp = Blueprint("ai", __name__, template_folder="templates", url_prefix="/ai")
 
 # Configure Gemini
 API_KEY = "AIzaSyASjeKSWrcGm4jOoDnsE0cFiMRFXCQ-Ak8"
@@ -25,7 +25,7 @@ def get_greeting():
 # Routes inside the Blueprint
 @ai_bp.route("/")
 def ai_home():
-    return render_template("index.html", greeting=get_greeting())
+    return render_template("ai.html", greeting=get_greeting())
 
 @ai_bp.route("/ask", methods=["POST"])
 def ask():

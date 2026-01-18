@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <title>FarmTech Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
 </head>
 <body >
 
@@ -22,9 +23,8 @@
     <li><a href="/predict/"><i class="fas fa-seedling"></i> Crop Prediction</a></li>
     <li><a href="/plant/"><i class="fas fa-leaf"></i> Plant Recognition</a></li>
     <li><a href="/project/"><i class="fas fa-tractor"></i> My Farms</a></li>
-    <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
-</ul>    <li><a href="/ai/"><i class="fas fa-robot"></i> AI Assistant</a></li>
-
+    <li><a href="/ai/"><i class="fas fa-robot"></i> AI Assistant</a></li>
+</ul>
   </div>
   {% endif %}
 
@@ -62,10 +62,11 @@
 
     <section class="features">
       <div class="feature-box">
-        <i class="fa-solid fa-robot fa-3x" style="color: green"></i>
-        <h3>AI Crop Advisor</h3>
-        <p>Best crop recommendations based on soil & climate</p>
-      </div>
+  <i class="fa-solid fa-cloud-sun fa-4x"></i>
+  <h3>Smart Irrigation</h3>
+  <p>Get alerts and advice on optimal irrigation</p>
+</div>
+
       <div class="feature-box">
         <i class="fa-solid fa-cloud-sun fa-4x" style="color: rgb(99,99,160)"></i>
             <li><a href="/ai/"><i class="fas fa-robot"></i> AI Assistant</a></li>

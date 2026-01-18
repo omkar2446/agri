@@ -14,3 +14,6 @@ __pycache__/
 uploads/
 static/uploads/
 network/static/uploads/
+# Python virtual environment
+venv/
+.env/
