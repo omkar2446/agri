@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmTech Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- Global & Variables --- */
+        :root {
+            --primary-color: #004d40; /* Dark Slate Blue */
+            --secondary-color: #4db6ac;/* Sky Blue */
+            --accent-color: #ff9800; /* Orange Peel */
+            --background-color: #e8f1f5; /* Light Blue-Gray */
+            --card-background: #ffffff; /* Pure White */
+            --text-dark: #333333; /* Charcoal Gray */
+            --text-light: #f8f9fa; /* Off-White */
+            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --border-radius-base: 8px;
+            --transition-speed: 0.3s;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: var(--background-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+        
+        p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color var(--transition-speed);
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px; /* Hidden by default */
+            width: 280px;
+            height: 100%;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 2rem 1.5rem;
+            transition: left var(--transition-speed) ease-in-out;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        
+        .sidebar.show {
+            left: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-header .user-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .sidebar-header .logout {
+            background: var(--card-background);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .sidebar-header .logout:hover {
+            background-color: var(--text-light);
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu li {
+            margin: 1.5rem 0;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .menu li i {
+            margin-right: 1rem;
+        }
+        
+        .menu li:hover {
+            transform: translateX(5px);
+            color: var(--accent-color);
+        }
+
+        /* --- Main Content --- */
+        .main-content-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            margin-left: 0;
+            padding: 2rem;
+            transition: margin-left var(--transition-speed) ease-in-out;
+        }
+        
+        .sidebar.show ~ .main-content {
+            margin-left: 280px;
+        }
+
+        /* --- Top Bar --- */
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-background);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 2rem;
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .notification {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .alert-btn {
+            padding: 0.5rem 1rem;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .alert-btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .community-button {
+            background: var(--primary-color);
+            color: var(--text-light);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform 0.2s;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .community-button:hover {
+            background: var(--secondary-color);
+            transform: scale(1.02);
+        }
+
+        /* --- Community Posts --- */
+        .box {
+            background: var(--card-background);
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 650px;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--shadow-light);
+            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+        
+        .box:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        input[type="text"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius-base);
+            font-size: 1rem;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.2);
+        }
+        
+        .post {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1.5rem 0;
+            animation: fadeIn 1s ease;
+        }
+        
+        .post:last-child {
+            border-bottom: none;
+        }
+        
+        .post strong {
+            color: var(--primary-color);
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .post p {
+            color: var(--text-dark);
+            margin: 0.5rem 0;
+        }
+        
+        .post img {
+            max-width: 100%;
+            margin-top: 1rem;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--shadow-light);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+        
+        .post img:hover {
+            transform: scale(1.01);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>FarmTech</h2>
+            <i class="fas fa-times" id="close-sidebar" style="cursor: pointer;"></i>
+        </div>
+         <ul class="menu">
+         <li><a href="/"><i class="fas fa-home"></i>Dashbord</a></li>
+    <li><a href="/ai/"><i class="fas fa-robot"></i> AI Assistant</a></li>
+    
+    <li><a href="/predict/"><i class="fas fa-seedling"></i> Crop Prediction</a></li>
+    <li><a href="/plant/"><i class="fas fa-leaf"></i> Plant Recognition</a></li>
+    <li><a href="#"><i class="fas fa-tractor"></i> My Farms</a></li>
+    <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+</ul>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <div class="top-bar">
+            <button id="menu-btn" class="community-button">☰ Menu</button>
+            <div class="logo">FarmTech</div>
+        </div>
+
+        <h2>🌾 Farmer Community Sharing</h2>
+        <div class="box">
+            <h3>Create Post</h3>
+            <input type="text" id="name" placeholder="Your name">
+            <textarea id="content" placeholder="Share your thoughts..."></textarea>
+            <input type="file" id="image">
+            <button class="community-button" onclick="createPost()">Post</button>
+            <p id="postMsg" style="margin-top: 1rem;"></p>
+        </div>
+
+        <div class="box">
+            <h3>Community Posts</h3>
+            <div id="posts"></div>
+            <button class="community-button" onclick="loadPosts()">🔄 Refresh</button>
+        </div>
+    </div>
+
+    <script>
+        const API_PREFIX = "/network"; // blueprint prefix
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.getElementById('menu-btn');
+            const closeBtn = document.getElementById('close-sidebar');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('.main-content');
+        
+            if (menuBtn && sidebar && closeBtn) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+            
+                closeBtn.addEventListener('click', function() {
+                    sidebar.classList.remove('show');
+                });
+            }
+        });
+
+        async function createPost() {
+            const name = document.getElementById("name").value.trim();
+            const content = document.getElementById("content").value.trim();
+            const image = document.getElementById("image").files[0];
+
+            if (!name) return alert("Enter your name!");
+
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("content", content);
+            if (image) formData.append("image", image);
+
+            try {
+                const res = await fetch(`${API_PREFIX}/post`, {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+                document.getElementById("postMsg").innerText = data.message || data.error;
+                document.getElementById("content").value = "";
+                document.getElementById("image").value = "";
+                loadPosts();
+            } catch (err) {
+                document.getElementById("postMsg").innerText = "⚠️ Error posting.";
+                console.error(err);
+            }
+        }
+
+        async function loadPosts() {
+            try {
+                const res = await fetch(`${API_PREFIX}/posts`);
+                const data = await res.json();
+                const postsDiv = document.getElementById("posts");
+                postsDiv.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    postsDiv.innerHTML = "<p>No posts yet. Be the first to share!</p>";
+                    return;
+                }
+
+                data.forEach(p => {
+                    postsDiv.innerHTML += `
+                        <div class="post">
+                            <strong>👨‍🌾 ${p.user}:</strong> ${p.content}
+                            ${p.image ? `<img src="${p.image}" alt="Post image">` : ""}
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+                document.getElementById("posts").innerHTML = "<p>⚠️ Could not load posts.</p>";
+            }
+        }
+
+        // Initial load
+        loadPosts();
+    </script>
+</body>
+</html>

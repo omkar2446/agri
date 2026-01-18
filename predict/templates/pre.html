@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maharashtra Crop Price Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- Global & Variables --- */
+        :root {
+  --primary-color: #004d40;
+  --secondary-color: #4db6ac;
+  --accent-color: #ffb74d;
+  --background-color: #f0f4f8;
+  --card-background: #ffffff;
+  --text-dark: #2c3e50;
+  --text-light: #ecf0f1;
+  --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --border-radius-base: 8px;
+  --transition-speed: 0.3s;
+}
+
+        /* --- Base Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: var(--background-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* --- Main Layout --- */
+        .main-content-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px; /* Hidden by default */
+            width: 280px;
+            height: 100%;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 2rem 1.5rem;
+            transition: left var(--transition-speed) ease-in-out;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        
+        .sidebar.show {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu li {
+            margin: 1.5rem 0;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .menu li:hover {
+            transform: translateX(5px);
+            color: var(--secondary-color);
+        }
+
+        .menu li i {
+            margin-right: 1rem;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            transition: margin-left var(--transition-speed) ease-in-out;
+        }
+        
+        .sidebar.show ~ .main-content {
+            margin-left: 280px;
+        }
+        
+        /* --- Top Bar --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-background);
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 2rem;
+            z-index: 10;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .community-button {
+            background: var(--primary-color);
+            color: var(--text-light);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform 0.2s;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .community-button:hover {
+            background: var(--secondary-color);
+            transform: scale(1.02);
+        }
+
+        /* --- Page Specific Styles --- */
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 95%;
+            width: 1000px;
+            animation: fadeIn 1s ease-in-out;
+            margin: auto;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        select, button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            margin: 10px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        select {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--background-color);
+        }
+        
+        tr:nth-child(odd) {
+            background-color: #fcece0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>FarmTech</h2>
+            <i class="fas fa-times" id="close-sidebar" style="cursor: pointer;"></i>
+        </div>
+        <ul class="menu">
+              <li><a href="/"><i class="fas fa-home"></i>Dashbord</a></li>
+    <li><a href="/ai/"><i class="fas fa-robot"></i> AI Assistant</a></li>
+    
+    <li><a href="/network/"><i class="fas fa-users"></i> Community</a></li>
+    <li><a href="/plant/"><i class="fas fa-leaf"></i> Plant Recognition</a></li>
+    <li><a href="#"><i class="fas fa-tractor"></i> My Farms</a></li>
+    <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        </ul>
+    </div>
+    
+    <div class="main-content" id="main-content">
+        <div class="top-bar">
+            <button id="menu-btn" class="community-button">☰ Menu</button>
+            <div class="logo">FarmTech</div>
+        </div>
+
+        <div class="container">
+            <h1>🌾 Maharashtra Crop Price Predictor 🌾</h1>
+            <p>Select a crop and see its predicted price for 2025–2026.</p>
+    
+            <div class="flex flex-col sm:flex-row justify-center items-center">
+                <select id="cropSelect" class="bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    {% for crop in crops %}
+                        <option value="{{ crop }}">{{ crop }}</option>
+                    {% endfor %}
+                </select>
+                <button onclick="getPrediction()" class="bg-orange-600 hover:bg-orange-700 text-white font-semibold transform hover:scale-105 active:scale-100 transition-transform">
+                    Predict Price
+                </button>
+            </div>
+    
+            <div id="predictionResult" class="mt-6"></div>
+            <canvas id="predictionChart" class="mt-6 hidden"></canvas>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.getElementById('menu-btn');
+            const closeBtn = document.getElementById('close-sidebar');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+        
+            if (menuBtn && sidebar && mainContent) {
+                menuBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                    mainContent.classList.toggle('show');
+                });
+            
+                closeBtn.addEventListener('click', function() {
+                    sidebar.classList.remove('show');
+                    mainContent.classList.remove('show');
+                });
+            }
+        });
+        
+        let chartInstance = null;
+
+        async function getPrediction() {
+            const crop = document.getElementById('cropSelect').value;
+            const resultDiv = document.getElementById('predictionResult');
+            const chartCanvas = document.getElementById('predictionChart');
+
+            // Show loading
+            resultDiv.innerHTML = '<p class="text-gray-600 animate-pulse">Loading prediction...</p>';
+            chartCanvas.classList.add("hidden");
+
+            try {
+                // Call Flask backend
+                const response = await fetch(`/predict/${crop}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<p class="text-red-500">${data.error}</p>`;
+                    return;
+                }
+
+                // Table
+                let resultHTML = `<h2 class="text-2xl text-amber-800 font-bold mb-4">
+                                     Predicted Prices for ${data.crop} (2025–2026)
+                                 </h2>
+                                 <table>
+                                   <thead>
+                                     <tr>
+                                       <th>Month-Year</th>
+                                       <th>Predicted Price (₹/Quintal)</th>
+                                     </tr>
+                                   </thead>
+                                   <tbody>`;
+
+                for (let i = 0; i < data.dates.length; i++) {
+                    resultHTML += `<tr>
+                                     <td>${data.dates[i]}</td>
+                                     <td>₹${data.prices[i].toFixed(2)}</td>
+                                   </tr>`;
+                }
+
+                resultHTML += '</tbody></table>';
+                resultDiv.innerHTML = resultHTML;
+
+                // Chart
+                chartCanvas.classList.remove("hidden");
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+                chartInstance = new Chart(chartCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [{
+                            label: `Predicted Price of ${data.crop} (₹/Quintal)`,
+                            data: data.prices,
+                            borderColor: '#E67E22',
+                            backgroundColor: 'rgba(241, 196, 15, 0.4)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: value => '₹' + value
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                resultDiv.innerHTML = `<p class="text-red-500">⚠️ Error fetching prediction</p>`;
+                console.error(err);
+            }
+        }
+    </script>
+
+</body>
+</html>

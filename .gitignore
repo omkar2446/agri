@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+*.h5
+*.pkl
+*.onnx
+
+*.db
+*.xlsx
+*.csv
+*.zip
+
+uploads/
+static/uploads/
+network/static/uploads/
