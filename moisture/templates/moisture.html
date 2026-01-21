@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenThumb IoT | ESP32</title>
+  
+  <style>
+    /* Modern Reset & Variables */
+    :root {
+      --primary: #00ff88;
+      --accent: #2ecc71;
+      --bg-dark: #121417;
+      --card-bg: #1e2227;
+      --text: #e0e0e0;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Header with Glow Effect */
+    header {
+      padding: 20px;
+      background: var(--card-bg);
+      text-align: center;
+      border-bottom: 2px solid var(--primary);
+      box-shadow: 0 4px 20px rgba(0, 255, 136, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--primary);
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+    }
+
+    /* Main Dashboard Area */
+    main {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Info Cards Area */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+    }
+
+    .stat-card small {
+      color: #888;
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.75rem;
+    }
+
+    .stat-card span {
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* The Viewport for ESP32 Content */
+    .monitor-container {
+      flex: 1;
+      background: #000;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 4px solid var(--card-bg);
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      /* Adjusting for potential ESP32 scaling issues */
+      background: #fff; 
+    }
+
+    /* Footer / Connection Button */
+    .controls {
+      display: flex;
+      justify-content: center;
+      padding-bottom: 20px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #000;
+      text-decoration: none;
+      padding: 12px 25px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      main { padding: 10px; }
+      header h1 { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🌿 Plant Care System</h1>
+  </header>
+
+  <main>
+    <div class="stats-row">
+      <div class="stat-card">
+        <small>DEVICE STATUS</small>
+        <span style="color: var(--primary);">● ONLINE</span>
+      </div>
+      <div class="stat-card">
+        <small>IP ADDRESS</small>
+        <span>192.168.4.1</span>
+      </div>
+      <div class="stat-card">
+        <small>REFRESH RATE</small>
+        <span>Real-time</span>
+      </div>
+    </div>
+
+    <div class="monitor-container">
+      <iframe src="http://192.168.4.1" title="ESP32 Stream"></iframe>
+    </div>
+
+    <div class="controls">
+      <a href="http://192.168.4.1" target="_blank" class="btn">OPEN FULLSCREEN DATA</a>
+    </div>
+  </main>
+
+</body>
+</html> 

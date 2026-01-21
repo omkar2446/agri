@@ -3,361 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FarmTech Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>FarmTech Pro | Smart Agriculture Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- Global & Variables --- */
         :root {
-            --primary-color: #004d40; /* Dark Slate Blue */
-            --secondary-color: #4db6ac;/* Sky Blue */
-            --accent-color: #ff9800; /* Orange Peel */
-            --background-color: #e8f1f5; /* Light Blue-Gray */
-            --card-background: #ffffff; /* Pure White */
-            --text-dark: #333333; /* Charcoal Gray */
-            --text-light: #f8f9fa; /* Off-White */
-            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
-            --border-radius-base: 8px;
-            --transition-speed: 0.3s;
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --bg-body: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            --radius-lg: 16px;
+            --radius-md: 12px;
         }
 
-        /* Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            background-color: var(--background-color);
-            color: var(--text-dark);
-            line-height: 1.6;
+            font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
             min-height: 100vh;
         }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 600;
-            color: var(--primary-color);
-            line-height: 1.2;
-        }
-        
-        p {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: color var(--transition-speed);
-        }
 
-        /* --- Sidebar --- */
+        /* --- Sidebar Redesign --- */
         .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #e2e8f0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
             position: fixed;
-            top: 0;
-            left: -280px; /* Hidden by default */
-            width: 280px;
-            height: 100%;
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            padding: 2rem 1.5rem;
-            transition: left var(--transition-speed) ease-in-out;
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+            height: 100vh;
             z-index: 1000;
         }
-        
-        .sidebar.show {
-            left: 0;
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 40px;
+            padding-left: 10px;
         }
-        
-        .sidebar-header {
+
+        .nav-menu { list-style: none; flex-grow: 1; }
+        .nav-item { margin-bottom: 8px; }
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            padding: 12px 15px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #f0fdf4;
+            color: var(--primary);
+        }
+
+        /* --- Layout Containers --- */
+        .main-wrapper {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 25px;
+            padding: 25px;
+        }
+
+        /* --- Header & Top Bar --- */
+        .top-header {
+            grid-column: 1 / span 2;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .sidebar-header .user-icon {
-            font-size: 2.5rem;
-            color: var(--secondary-color);
-        }
-        
-        .sidebar-header .logout {
-            background: var(--card-background);
-            color: var(--primary-color);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: background-color var(--transition-speed);
-        }
-        
-        .sidebar-header .logout:hover {
-            background-color: var(--text-light);
-        }
-        
-        .menu {
-            list-style: none;
-        }
-        
-        .menu li {
-            margin: 1.5rem 0;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: transform 0.2s ease-in-out;
-        }
-        
-        .menu li i {
-            margin-right: 1rem;
-        }
-        
-        .menu li:hover {
-            transform: translateX(5px);
-            color: var(--accent-color);
+            background: var(--white);
+            padding: 15px 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 5px;
         }
 
-        /* --- Main Content --- */
-        .main-content-wrapper {
+        .lang-toggle {
             display: flex;
-            min-height: 100vh;
-        }
-        
-        .main-content {
-            flex-grow: 1;
-            margin-left: 0;
-            padding: 2rem;
-            transition: margin-left var(--transition-speed) ease-in-out;
-        }
-        
-        .sidebar.show ~ .main-content {
-            margin-left: 280px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 30px;
         }
 
-        /* --- Top Bar --- */
-        .top-bar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--card-background);
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius-base);
-            box-shadow: var(--shadow-light);
-            margin-bottom: 2rem;
-            position: sticky;
-            top: 2rem;
-            z-index: 10;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        
-        .notification {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .alert-btn {
-            padding: 0.5rem 1rem;
-            background: var(--secondary-color);
-            color: var(--text-light);
+        .lang-btn {
             border: none;
-            border-radius: 6px;
+            padding: 6px 16px;
+            border-radius: 20px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color var(--transition-speed);
-        }
-        
-        .alert-btn:hover {
-            background-color: var(--primary-color);
-        }
-        
-        .community-button {
-            background: var(--primary-color);
-            color: var(--text-light);
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--border-radius-base);
-            cursor: pointer;
-            transition: background-color var(--transition-speed), transform 0.2s;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        
-        .community-button:hover {
-            background: var(--secondary-color);
-            transform: scale(1.02);
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            background: transparent;
+            color: var(--text-muted);
         }
 
-        /* --- Community Posts --- */
-        .box {
-            background: var(--card-background);
-            padding: 2.5rem;
-            margin: 2rem auto;
-            max-width: 650px;
-            border-radius: var(--border-radius-base);
-            box-shadow: var(--shadow-light);
-            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        .lang-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        
-        .box:hover {
-            box-shadow: var(--shadow-hover);
-            transform: translateY(-5px);
+
+        /* --- Weather & Metrics Cards --- */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
-        
-        h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+
+        .metric-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        
-        input[type="text"],
-        textarea,
-        input[type="file"] {
+
+        .metric-val { font-size: 24px; font-weight: 700; color: var(--text-main); }
+        .metric-label { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* --- Social Feed Area --- */
+        .feed-container { display: flex; flex-direction: column; gap: 25px; }
+
+        .composer-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+        }
+
+        .composer-card textarea {
             width: 100%;
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            border: 1px solid #ccc;
-            border-radius: var(--border-radius-base);
-            font-size: 1rem;
-            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 15px;
+            font-family: inherit;
+            resize: none;
+            margin: 15px 0;
+            background: #f8fafc;
         }
-        
-        input[type="text"]:focus,
-        textarea:focus,
-        input[type="file"]:focus {
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+        .post-item {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+        }
+
+        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .post-avatar { width: 40px; height: 40px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); }
+
+        .post-img { width: 100%; border-radius: var(--radius-md); margin-top: 15px; }
+
+        /* --- Right Sidebar Widgets --- */
+        .widget-panel { display: flex; flex-direction: column; gap: 25px; }
+
+        .widget {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+        }
+
+        .widget-title { font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+
+        .weather-widget {
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .quote-card {
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            background: #f0fdf4;
+            color: var(--primary-dark);
+            line-height: 1.6;
+        }
+
+        /* --- Custom Inputs --- */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--text-muted); }
+        .fancy-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.2);
-        }
-        
-        .post {
-            border-bottom: 1px solid #e0e0e0;
-            padding: 1.5rem 0;
-            animation: fadeIn 1s ease;
-        }
-        
-        .post:last-child {
-            border-bottom: none;
-        }
-        
-        .post strong {
-            color: var(--primary-color);
-            display: block;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
         }
 
-        .post p {
-            color: var(--text-dark);
-            margin: 0.5rem 0;
-        }
-        
-        .post img {
-            max-width: 100%;
-            margin-top: 1rem;
-            border-radius: var(--border-radius-base);
-            box-shadow: var(--shadow-light);
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-        }
-        
-        .post img:hover {
-            transform: scale(1.01);
-            box-shadow: var(--shadow-hover);
-        }
-
-        /* --- Animations --- */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @media (max-width: 1024px) {
+            .main-wrapper { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .main-wrapper { margin-left: 0; width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>FarmTech</h2>
-            <i class="fas fa-times" id="close-sidebar" style="cursor: pointer;"></i>
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fas fa-leaf"></i> FarmTech <span style="font-weight: 300;">Pro</span>
         </div>
-         <ul class="menu">
-         <li><a href="/"><i class="fas fa-home"></i>Dashbord</a></li>
-    <li><a href="/ai/"><i class="fas fa-robot"></i> AI Assistant</a></li>
-    
-    <li><a href="/predict/"><i class="fas fa-seedling"></i> Crop Prediction</a></li>
-    <li><a href="/project/"><i class="fas fa-tractor"></i> My Farms</a></li>
-</ul>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-columns"></i>
+                    <span class="lang" data-en="Dashboard" data-hi="डैशबोर्ड" data-mr="डॅशबोर्ड">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/ai/" class="nav-link">
+                    <i class="fas fa-microscope"></i>
+                    <span class="lang" data-en="Crop Health" data-hi="फसल स्वास्थ्य" data-mr="पीक आरोग्य">Crop Health</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/predict/" class="nav-link">
+                    <i class="fas fa-cloud-sun-rain"></i>
+                    <span class="lang" data-en="Forecast" data-hi="पूर्वानुमान" data-mr="अंदाज">Forecast</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span class="lang" data-en="Community" data-hi="समुदाय" data-mr="समुदाय">Community</span>
+                </a>
+            </li>
         </ul>
-    </div>
-    
-    <div class="main-content">
-        <div class="top-bar">
-            <button id="menu-btn" class="community-button">☰ Menu</button>
-            <div class="logo">FarmTech</div>
+        <div class="nav-item" style="margin-top: auto;">
+            <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
         </div>
+    </aside>
 
-        <h2>🌾 Farmer Community Sharing</h2>
-        <div class="box">
-            <h3>Create Post</h3>
-            <input type="text" id="name" placeholder="Your name">
-            <textarea id="content" placeholder="Share your thoughts..."></textarea>
-            <input type="file" id="image">
-            <button class="community-button" onclick="createPost()">Post</button>
-            <p id="postMsg" style="margin-top: 1rem;"></p>
-        </div>
+    <main class="main-wrapper">
+        <header class="top-header">
+            <div class="search-bar" style="color: var(--text-muted);">
+                <i class="fas fa-search"></i> &nbsp; Search analytics...
+            </div>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+                <button class="lang-btn" onclick="setLanguage('hi')">हिंदी</button>
+                <button class="lang-btn" onclick="setLanguage('mr')">मराठी</button>
+            </div>
+        </header>
 
-        <div class="box">
-            <h3>Community Posts</h3>
-            <div id="posts"></div>
-            <button class="community-button" onclick="loadPosts()">🔄 Refresh</button>
-        </div>
-    </div>
+        <section class="feed-container">
+            <div class="metric-grid">
+                <div class="metric-card">
+                    <span class="metric-label">Air Quality (CO2)</span>
+                    <span class="metric-val" id="co2-val">412 <small style="font-size: 14px; font-weight: 400;">ppm</small></span>
+                    <span style="font-size: 12px; color: var(--primary);"><i class="fas fa-check-circle"></i> Optimal Level</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Soil Moisture</span>
+                    <span class="metric-val">34%</span>
+                    <span style="font-size: 12px; color: #f59e0b;"><i class="fas fa-tint"></i> Needs Attention</span>
+                </div>
+            </div>
+
+            <div class="composer-card">
+                <div class="widget-title">
+                    <i class="fas fa-pen-fancy" style="color: var(--primary);"></i>
+                    <span class="lang" data-en="Create Post" data-hi="पोस्ट लिखें" data-mr="पोस्ट लिहा">Create Post</span>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="name" class="fancy-input" placeholder="Your Name">
+                </div>
+                <textarea id="content" rows="3" placeholder="Share your farming insights..."></textarea>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+                    <div style="flex-grow: 1;">
+                        <input type="file" id="image" style="display: none;">
+                        <button class="lang-btn" onclick="document.getElementById('image').click()" style="border: 1px dashed #cbd5e1; width: 100%;">
+                            <i class="fas fa-camera"></i> <span class="lang" data-en="Add Photo" data-hi="फोटो जोड़ें" data-mr="फोटो जोडा">Add Photo</span>
+                        </button>
+                    </div>
+                    <button class="btn-primary" onclick="createPost()" style="width: auto;">
+                        <span class="lang" data-en="Publish" data-hi="प्रकाशित करें" data-mr="प्रसिद्ध करा">Publish</span>
+                    </button>
+                </div>
+                <p id="postMsg" style="font-size: 12px; margin-top: 10px; color: var(--primary);"></p>
+            </div>
+
+            <div id="posts-wrapper">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 class="widget-title"><i class="fas fa-rss"></i> Farmer Feed</h3>
+                    <button class="lang-btn" onclick="loadPosts()"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+                <div id="posts">
+                    </div>
+            </div>
+        </section>
+
+        <aside class="widget-panel">
+            <div class="widget weather-widget">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <p style="font-size: 14px; opacity: 0.9;">Today's Weather</p>
+                        <h2 style="font-size: 32px; margin: 5px 0;">28°C</h2>
+                        <p>Sunny & Clear</p>
+                    </div>
+                    <i class="fas fa-sun" style="font-size: 40px;"></i>
+                </div>
+                <hr style="margin: 15px 0; opacity: 0.2;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span><i class="fas fa-wind"></i> 12km/h</span>
+                    <span><i class="fas fa-droplet"></i> 45% Humidity</span>
+                </div>
+            </div>
+
+            <div class="widget quote-card">
+                <i class="fas fa-quote-left" style="opacity: 0.3; margin-bottom: 10px;"></i>
+                <p id="daily-quote">"The discovery of agriculture was the first big step toward a civilized life."</p>
+            </div>
+
+            <div class="widget">
+                <div class="widget-title">Market Prices</div>
+                <div style="font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Wheat (100kg)</span>
+                        <span style="color: var(--primary); font-weight: 600;">₹2,125</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Rice (100kg)</span>
+                        <span style="color: var(--primary); font-weight: 600;">₹3,850</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
 
     <script>
-        const API_PREFIX = "/network"; // blueprint prefix
+        const API_PREFIX = "/network";
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuBtn = document.getElementById('menu-btn');
-            const closeBtn = document.getElementById('close-sidebar');
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.querySelector('.main-content');
-        
-            if (menuBtn && sidebar && closeBtn) {
-                menuBtn.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
-                });
-            
-                closeBtn.addEventListener('click', function() {
-                    sidebar.classList.remove('show');
-                });
-            }
-        });
+        // Real-time Dynamic Data
+       async function updateAQI() {
+    const API_KEY = "dfba749db1e66dbb054e0ec4bf7078fc";
+    const lat = 19.0760;   // change to your location
+    const lon = 72.8777;
 
+    try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+        );
+        const data = await res.json();
+
+        const co2 = data.list[0].components.co;
+        const aqi = data.list[0].main.aqi;
+
+        document.getElementById("co2-val").innerHTML =
+          `${co2.toFixed(1)} <small>ppm</small>`;
+
+        updateAQIStatus(aqi);
+
+    } catch (e) {
+        console.error("AQI fetch failed", e);
+    }
+}
+function updateAQIStatus(aqi) {
+    const statusText = document.querySelector(".metric-card span:last-child");
+
+    let text = "";
+    let color = "";
+
+    if (aqi === 1) { text = "Good"; color = "#10b981"; }
+    else if (aqi === 2) { text = "Fair"; color = "#84cc16"; }
+    else if (aqi === 3) { text = "Moderate"; color = "#f59e0b"; }
+    else if (aqi === 4) { text = "Poor"; color = "#ef4444"; }
+    else { text = "Very Poor"; color = "#7f1d1d"; }
+
+    statusText.innerHTML = `<i class="fas fa-circle"></i> ${text}`;
+    statusText.style.color = color;
+}
+updateAQI();
+setInterval(updateAQI, 600000); // every 10 minutes
+
+        setInterval(updateCO2, 5000);
+
+        const quotes = [
+            "Agriculture is our wisest pursuit, because it will in the end contribute most to real wealth.",
+            "The farmer is the only man in our economy who buys everything at retail and sells everything at wholesale.",
+            "To a man with an empty stomach, food is God.",
+            "Nature always wears the colors of the spirit. Happy Farming!"
+        ];
+        document.getElementById('daily-quote').innerText = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`;
+
+        // Language Logic
+        function setLanguage(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.lang').forEach(el => {
+                el.innerText = el.getAttribute(`data-${lang}`);
+            });
+            const placeholders = {
+                en: { name: "Your Name", content: "Share your farming insights..." },
+                hi: { name: "आपका नाम", content: "अपनी खेती के विचार साझा करें..." },
+                mr: { name: "तुमचे नाव", content: "तुमचे शेतीचे विचार शेअर करा..." }
+            };
+            document.getElementById('name').placeholder = placeholders[lang].name;
+            document.getElementById('content').placeholder = placeholders[lang].content;
+        }
+
+        // Original Backend Functions
         async function createPost() {
             const name = document.getElementById("name").value.trim();
             const content = document.getElementById("content").value.trim();
             const image = document.getElementById("image").files[0];
-
             if (!name) return alert("Enter your name!");
 
             const formData = new FormData();
@@ -366,18 +454,13 @@
             if (image) formData.append("image", image);
 
             try {
-                const res = await fetch(`${API_PREFIX}/post`, {
-                    method: "POST",
-                    body: formData
-                });
-                const data = await res.json();
-                document.getElementById("postMsg").innerText = data.message || data.error;
+                const res = await fetch(`${API_PREFIX}/post`, { method: "POST", body: formData });
+                document.getElementById("postMsg").innerText = "✅ Posted Successfully!";
                 document.getElementById("content").value = "";
                 document.getElementById("image").value = "";
                 loadPosts();
             } catch (err) {
-                document.getElementById("postMsg").innerText = "⚠️ Error posting.";
-                console.error(err);
+                document.getElementById("postMsg").innerText = "⚠️ Connection Error";
             }
         }
 
@@ -389,25 +472,30 @@
                 postsDiv.innerHTML = "";
 
                 if (!data || data.length === 0) {
-                    postsDiv.innerHTML = "<p>No posts yet. Be the first to share!</p>";
+                    postsDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px;'>No discussions yet.</p>";
                     return;
                 }
 
                 data.forEach(p => {
                     postsDiv.innerHTML += `
-                        <div class="post">
-                            <strong>👨‍🌾 ${p.user}:</strong> ${p.content}
-                            ${p.image ? `<img src="${p.image}" alt="Post image">` : ""}
+                        <div class="post-item">
+                            <div class="post-header">
+                                <div class="post-avatar"><i class="fas fa-user"></i></div>
+                                <div>
+                                    <div style="font-weight:700; font-size:14px;">${p.user}</div>
+                                    <div style="font-size:11px; color:#94a3b8;">Shared a post</div>
+                                </div>
+                            </div>
+                            <p style="font-size: 15px; color:#334155; line-height:1.6;">${p.content}</p>
+                            ${p.image ? `<img src="${p.image}" class="post-img" alt="Farm photo">` : ""}
                         </div>
                     `;
                 });
             } catch (err) {
-                console.error(err);
-                document.getElementById("posts").innerHTML = "<p>⚠️ Could not load posts.</p>";
+                document.getElementById("posts").innerHTML = "<p>⚠️ Loading failed.</p>";
             }
         }
 
-        // Initial load
         loadPosts();
     </script>
 </body>

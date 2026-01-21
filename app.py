@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, redirect, url_for, request
 import openpyxl, os
+from moisture import moisture_bp
 
 from ai import ai_bp
 from network import network_bp
@@ -21,6 +22,7 @@ app.register_blueprint(ai_bp)
 app.register_blueprint(network_bp)
 app.register_blueprint(predict_bp)
 app.register_blueprint(project_bp)
+app.register_blueprint(moisture_bp)
 
 # Setup Excel file
 if not os.path.exists(EXCEL_FILE):
